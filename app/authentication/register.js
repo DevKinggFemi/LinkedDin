@@ -22,7 +22,7 @@ const register = () => {
       profileImage:image,
     }
 console.log(user)
-    axios.post("http://192.168.248.246:5000/api/userAuth/register", user).then((response)=> {
+    axios.post("/userAuth/register", user).then((response)=> {
       console.log(response,);
       Alert.alert("Registeration Successful")
       setEmail("");

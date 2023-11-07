@@ -1,15 +1,65 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, KeyboardAvoidingView, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const login = () => {
-
+  const router= useRouter();
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
-  const router= useRouter();
+  useEffect(()=> {
+const loginStatus = async()=>{
+  try{
+const token = await AsyncStorage.getItem('authToken');
+if (token){
+  router.replace('/tabs/home');
+}
+  }catch(error) {
+console.log(error)
+  }
+}
+loginStatus();
+  },[])
+
+  const handleLogin = ()=>{
+    const user ={
+      email: email,
+      password: password,
+    }
+console.log(user)
+    axios.post("/userAuth/login", user).then((response)=> {
+      const token = response.data.accessToken;
+      AsyncStorage.setItem(authToken, token)
+      console.log(response.data.accessToken);
+      Alert.alert("Login Successful")
+      router.replace('/tabs/home');
+      setEmail("");
+      setPassword("");
+    }).catch((error) => {
+        if (error.response) {
+          // The request was made, but the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log('Error response data:', error.response.data);
+          console.log('Status code:', error.response.status);
+          console.log('Headers:', error.response.headers);
+          
+          const errorMessage = error.response.data.message; // Assuming your backend sends an error message with the key "message"
+          
+          Alert.alert('Registration failed', errorMessage);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log('No response was received:', error.request);
+        } else {
+          // Something happened in setting up the request
+          console.log('Error setting up the request:', error.message);
+        }
+        console.log('Error:', error.config);
+      })
+  }
+
   return (
    <SafeAreaView style ={{flex: 1, backgroundColor: "white",  alignItems: "center"}}>
     <View  >
@@ -39,7 +89,7 @@ const login = () => {
      <Text style={{color: "#007FFF", fontWeight: "500"}}>Forgot Password</Text> 
     </View>
     <View style={{marginTop:80}}>
-      <Pressable style={{width:200,backgroundColor:"#0072b1", borderRadius:6, marginLeft:"auto" ,marginRight:"auto", padding:15}}>
+      <Pressable onPress={handleLogin} style={{width:200,backgroundColor:"#0072b1", borderRadius:6, marginLeft:"auto" ,marginRight:"auto", padding:15}}>
         <Text style={{textAlign:"center", color:"white", fontSize:16, fontWeight:"bold"}}>Login</Text>
       </Pressable>
     </View>

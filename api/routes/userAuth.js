@@ -38,7 +38,7 @@ try{
             from : "investorsclub@gmail.com",
             to: email,
             subject: "Email Verification",
-            text: `please click the following link to verify your email: http://localhost:5000/verify/${verifcationToken}`,
+            text: `please click the following link to verify your email: http://192.168.248.246:5000/verify/${verifcationToken}`,
         }
         try{
     await transporter.sendMail(mailOptions);
@@ -75,5 +75,44 @@ res.status(500).json({message: "Email verification failed"});
 }
 
 });
+
+router.post("/login", async (req, res) => {
+    
+    try {
+       
+      const user = await User.findOne({ email: req.body.email });
+      if (!user) {
+        console.log("User not found");
+        return res.status(401).json("Wrong credentials");
+      }
+  
+      const hashedPassword = CryptoJS.AES.decrypt(
+        user.password,
+        process.env.PASS_SEC
+      );
+     
+      const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+      if (originalPassword !== req.body.password) {
+        return res.status(401).json("Wrong credentials");
+      }
+      const accessToken = jwt.sign(
+        {
+          userId: user._id,
+          verified: user.verified,
+        },
+        process.env.JWT_SEC, 
+        { expiresIn: "1d" }
+      );
+  
+      const { password, ...others } = user._doc;
+      
+  
+      res.status(200).json({ ...others, accessToken });
+    } catch (err) {
+      console.error("Error:", err);
+      res.status(500).json(err);
+    }
+  });
+  
 
 module.exports = router;
