@@ -23,7 +23,7 @@ const register = () => {
     }
 console.log(user)
     axios.post("/userAuth/register", user).then((response)=> {
-      console.log(response,);
+      console.log(response);
       Alert.alert("Registeration Successful")
       setEmail("");
       setImage("");

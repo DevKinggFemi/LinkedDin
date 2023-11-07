@@ -10,20 +10,20 @@ const login = () => {
   const router= useRouter();
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
-  useEffect(()=> {
-const loginStatus = async()=>{
-  try{
-const token = await AsyncStorage.getItem('authToken');
-if (token){
-  router.replace('/tabs/home');
-}
-  }catch(error) {
-console.log(error)
+  
+useEffect (()=> {
+  const checkLoginStatus = async ()=> {
+    try{
+      const token =  await AsyncStorage.getItem('authToken');
+      if (token){
+        router.replace("tabs/home");
+      }
+    }catch (error){
+      console.log(error)
+    }
   }
-}
-loginStatus();
-  },[])
-
+  checkLoginStatus();
+}, [])
   const handleLogin = ()=>{
     const user ={
       email: email,
@@ -59,7 +59,11 @@ console.log(user)
         console.log('Error:', error.config);
       })
   }
-
+  
+    
+   
+   
+     
   return (
    <SafeAreaView style ={{flex: 1, backgroundColor: "white",  alignItems: "center"}}>
     <View  >

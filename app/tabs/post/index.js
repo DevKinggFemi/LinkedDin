@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'expo-router';
 import { firebase } from "../../../firebase";
+import { db } from "../../../firebase";
 import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from "expo-file-system"
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -80,7 +81,7 @@ const index = () => {
 
       const filename = image.substring(image.lastIndexOf("/") + 1);
 
-      const ref = firebase.storage().ref().child(filename);
+      const ref = db.storage().ref().child(filename);
       await ref.put(blob);
 
       const downloadURL = await ref.getDownloadURL();

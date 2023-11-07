@@ -7,9 +7,10 @@ const nodemailer = require("nodemailer");
 
 router.post("/register", async (req,res)=> {
 try{
-    const{name, email, password, profileImage}= req.body
+    const{name, email, password, profileImage}= req.body;
     console.log(req.body.email)
     const existingUser = await User.findOne({email});
+
     if (existingUser){
         console.log("Email already registered")
         return res.status(400).json({message:"Email already exists"})
@@ -21,7 +22,10 @@ try{
         password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString(),
     });
     newUser.verificationToken =  crypto.randomBytes(20).toString("hex");
+
      await newUser.save();
+
+     console.log(newUser)
     sendVerificationEmail(newUser.email, newUser.verificationToken)
     res.status(202).json({message:"Registration successful: Kindly check your email for verification"});
 
@@ -29,16 +33,16 @@ try{
         const transporter =  nodemailer.createTransport({
             service:'gmail',
             auth:{
-                user: "investorsclub98@gmail.com",
-                pass:"fcbc ymmz tbdg quzm"
+                user: "mayowa.odunsi02@gmail.com",
+                pass:"eaopkfebfpvvpovz"
             }
         })
         
         const mailOptions = {
-            from : "investorsclub@gmail.com",
+            from : "mayowa.odunsi02@gmail.com",
             to: email,
             subject: "Email Verification",
-            text: `please click the following link to verify your email: http://192.168.248.246:5000/verify/${verifcationToken}`,
+            text: `please click the following link to verify your email: http://192.168.217.246:5000/api/verify/${verifcationToken}`,
         }
         try{
     await transporter.sendMail(mailOptions);
