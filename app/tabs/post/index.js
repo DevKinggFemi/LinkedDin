@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Image, TextInput } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, TextInput, Pressable } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Entypo } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -17,9 +17,7 @@ const index = () => {
   const router = useRouter();
   useEffect(() => {
     const fetchUser = async () => {
-      const token = await AsyncStorage.getItem("authToken");
-      const decodeToken = jwtDecode(token);
-      const userId = decodeToken.userId;
+      const userId = await AsyncStorage.getItem("userId");
       setUserId(userId);
     }
     fetchUser();

@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View , Pressable} from 'react-native'
 import React , {useState, useEffect}from 'react'
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'expo-router';
@@ -14,9 +14,8 @@ const connections = () => {
   const [connections, setConnections] = useState([]);
   useEffect(() => {
     const fetchUser = async () => {
-      const token = await AsyncStorage.getItem("authToken");
-      const decodeToken = jwtDecode(token);
-      const userId = decodeToken.userId;
+      
+      const userId = await AsyncStorage.getItem("userId");
       setUserId(userId);
     }
     fetchUser();

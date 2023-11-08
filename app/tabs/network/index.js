@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, FlatList } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, FlatList, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { jwtDecode } from 'jwt-decode';
@@ -16,9 +16,7 @@ const index = () => {
   const [connectionRequests, setConnectionRequests] = useState([])
   useEffect(() => {
     const fetchUser = async () => {
-      const token = await AsyncStorage.getItem("authToken");
-      const decodeToken = jwtDecode(token);
-      const userId = decodeToken.userId;
+      const userId = await AsyncStorage.getItem("userId");
       setUserId(userId);
     }
     fetchUser();

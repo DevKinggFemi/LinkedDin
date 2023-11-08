@@ -34,7 +34,10 @@ console.log(user)
     axios.post("/userAuth/login", user).then((response)=> {
       console
       const token = response.data.accessToken;
+      const userId = response.data._id;
+      console.log(response.data)
       AsyncStorage.setItem("authToken", token)
+      AsyncStorage.setItem("userId", userId)
       console.log(response.data.accessToken);
       Alert.alert("Login Successful")
       router.replace('/tabs/home');

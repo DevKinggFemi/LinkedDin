@@ -27,9 +27,7 @@ const profile = () => {
   const [userDescription, setUserDescription] = useState("");
   useEffect(() => {
     const fetchUser = async () => {
-      const token = await AsyncStorage.getItem("authToken");
-      const decodedToken = jwtDecode(token);
-      const userId = decodedToken.userId;
+      const userId = await AsyncStorage.getItem("userId");;
       setUserId(userId);
     };
 
