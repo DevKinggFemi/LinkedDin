@@ -11,7 +11,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import jwt_decode from "jwt-decode";
+import jwtDecode from "jwt-decode";
 import {
   Ionicons,
   Entypo,
@@ -28,7 +28,7 @@ const profile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const token = await AsyncStorage.getItem("authToken");
-      const decodedToken = jwt_decode(token);
+      const decodedToken = jwtDecode(token);
       const userId = decodedToken.userId;
       setUserId(userId);
     };
