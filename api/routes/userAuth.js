@@ -7,10 +7,11 @@ const nodemailer = require("nodemailer");
 
 router.post("/register", async (req,res)=> {
 try{
+  const sender =req.ip.replace('::ffff:', '');
     const{name, email, password, profileImage}= req.body;
     console.log(req.body.email)
     const existingUser = await User.findOne({email});
-
+console.log(sender)
     if (existingUser){
         console.log("Email already registered")
         return res.status(400).json({message:"Email already exists"})
@@ -26,44 +27,49 @@ try{
      await newUser.save();
 
      console.log(newUser)
-    sendVerificationEmail(newUser.email, newUser.verificationToken)
-    res.status(202).json({message:"Registration successful: Kindly check your email for verification"});
+    sendVerificationEmail(newUser.email, newUser.verificationToken, sender)
+    res.status(202).json({message:"Registration successful, Kindly check your email for verification"});
 
-    const sendVerificationEmail= async (email, verifcationToken) =>{
-        const transporter =  nodemailer.createTransport({
-            service:'gmail',
-            auth:{
-                user: "mayowa.odunsi02@gmail.com",
-                pass:"eaopkfebfpvvpovz"
-            }
-        })
-        
-        const mailOptions = {
-            from : "mayowa.odunsi02@gmail.com",
-            to: email,
-            subject: "Email Verification",
-            text: `please click the following link to verify your email: http://192.168.217.246:5000/api/verify/${verifcationToken}`,
-        }
-        try{
-    await transporter.sendMail(mailOptions);
-    console.log("verification sent successfully");
-        }catch(error){
-            console.log("Error sending the verification email");
-    
-        }
-        };
+  
 
-} catch (err){
-    res.status(500).json({message: "Registration Failed"});
+}catch(error){
+  console.log("Error sending the verification email");
+
 }
-
-
 });
+
+const sendVerificationEmail= async (email, verifcationToken, sender) =>{
+
+  const transporter =  nodemailer.createTransport({
+      service:'gmail',
+      auth:{
+          user: "mayowa.odunsi02@gmail.com",
+          pass:"eaopkfebfpvvpovz"
+      }
+  })
+  
+  const mailOptions = {
+      from : "roninbsc@gmail.com",
+      to: email,
+      subject: "Email Verification",
+      text: `please click the following link to verify your email: http://${sender}:5000/api/userAuth/verify/${verifcationToken}`,
+  }
+  try{
+    console.log(mailOptions)
+await transporter.sendMail(mailOptions);
+console.log("verification sent successfully");
+  }
+  catch (err){
+res.status(500).json({message: "Registration Failed"});
+};
+}
 
 
 router.get("/verify/:token", async (req,res)=> {
 try{
+   
 const token = req.params.token;
+console.log(token)
 const user= await User.findOne({verificationToken: token});
 if(!user){
     return res.status(404).json({message: "invalid verification token"})
@@ -111,7 +117,7 @@ router.post("/login", async (req, res) => {
       const { password, ...others } = user._doc;
       
   
-      res.status(200).json({ ...others, accessToken });
+      res.status(200).json({  accessToken });
     } catch (err) {
       console.error("Error:", err);
       res.status(500).json(err);

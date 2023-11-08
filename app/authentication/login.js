@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Image, KeyboardAvoidingView, Pressable } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, Image, KeyboardAvoidingView, Pressable , Alert} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
@@ -30,9 +30,11 @@ useEffect (()=> {
       password: password,
     }
 console.log(user)
+
     axios.post("/userAuth/login", user).then((response)=> {
+      console
       const token = response.data.accessToken;
-      AsyncStorage.setItem(authToken, token)
+      AsyncStorage.setItem("authToken", token)
       console.log(response.data.accessToken);
       Alert.alert("Login Successful")
       router.replace('/tabs/home');

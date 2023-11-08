@@ -24,7 +24,7 @@ const register = () => {
 console.log(user)
     axios.post("/userAuth/register", user).then((response)=> {
       console.log(response);
-      Alert.alert("Registeration Successful")
+      Alert.alert("Registeration Almost Complete: Check your mail to complete your registration ")
       setEmail("");
       setImage("");
       setName("");
